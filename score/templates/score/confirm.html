@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} 確認画面 {% endblock %}
+
+{% block contents %}
+<div class="container">
+  <h1>確認画面</h1>
+  <h3>得点を確認してください</h3>
+  <table class ="table table-hover table table-striped" >
+    <tr>
+      <td>
+        {{form.run.label}}
+      </td>
+      <td>
+        {{run.team}}
+      </td>
+      <td>
+        得点
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{form.m1_count.label}}
+      </td>
+      <td>
+        {{form.m1_count.value}} 回
+      </td>
+      <td>
+        {{score.m1_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m2_count.label}}
+      </td>
+      <td>
+        {{form.m2_count.value}} 回
+      </td>
+      <td>
+        {{score.m2_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m2h_count.label}}
+      </td>
+      <td>
+        {{form.m2h_count.value}} 回
+      </td>
+      <td>
+        {{score.m2h_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m3_count.label}}
+      </td>
+      <td>
+        {{form.m3_count.value}} 回
+      </td>
+      <td>
+        {{score.m3_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m3h_count.label}}
+      </td>
+      <td>
+        {{form.m3h_count.value}} 回
+      </td>
+      <td>
+        {{score.m3h_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m4_count.label}}
+      </td>
+      <td>
+        {{form.m4_count.value}} 回
+      </td>
+      <td>
+        {{score.m4_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m4h_count.label}}
+      </td>
+      <td>
+        {{form.m4h_count.value}} 回
+      </td>
+      <td>
+        {{score.m4h_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m5_count.label}}
+      </td>
+      <td>
+        {{form.m5_count.value}} 
+      </td>
+      <td>
+        {{score.m5_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m6_count.label}}
+      </td>
+      <td>
+        {{form.m6_count.value}} 回
+      </td>
+      <td>
+        {{score.m6_score}} 点
+      </td>
+    </tr>
+    </tr>
+    <tr>
+      <td>
+        {{form.m6h_count.label}}
+      </td>
+      <td>
+        {{form.m6h_count.value}} 回
+      </td>
+      <td>
+        {{score.m6h_score}} 点
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{form.m7_count.label}}
+      </td>
+      <td>
+        {{form.m7_count.value}} 
+      </td>
+      <td>
+        {{score.m7_score}} 点
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{form.bonus1_count.label}}
+      </td>
+      <td>
+        {{form.bonus1_count.value}} 回
+      </td>
+      <td>
+        {{score.bonus1_score}} 点
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{form.bonus2_count.label}}
+      </td>
+      <td>
+        {{form.bonus2_count.value}} 
+      </td>
+      <td>
+        {{score.bonus2_score}} 点
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{form.perfect.label}}
+      </td>
+      <td>
+        {{form.perfect.value}} 
+      </td>
+      <td>
+        ----
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{form.clear_time.label}}
+      </td>
+      <td>
+        {{form.clear_time.value}} 
+      </td>
+      <td>
+        ----
+      </td>
+    </tr>
+    <tr>
+      <td>
+      </td>
+      <td>
+        合計得点
+      </td>
+      <td>
+        {{score.total}} 
+      </td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td>
+        <form action="{% url 'create' run.pk %}" method="POST">
+          {% csrf_token %}
+          {% for field in form %}
+            {{ field.as_hidden }}
+          {% endfor %}
+          <button type="submit" style ="width:150px; height:60px; border-radius:10px;">戻る</button>
+        </form>
+      </td>
+      <td>
+        <form action="{% url 'determine' %}" method="POST">
+          {% csrf_token %}
+          {% for field in form %}
+            {{ field.as_hidden }}
+          {% endfor %}
+          <button type="submit" style ="width:150px; height:60px; border-radius:10px;">確定する</button>
+        </form>
+      </td>
+    </tr>
+  </table>    
+</div>
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}

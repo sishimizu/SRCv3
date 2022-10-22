@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} 走行順 {% endblock %}
+
+{% block contents %}
+<div class="container">
+  <h1>走行リスト</h1>
+<table class ="table table-hover table table-striped" >
+  <tr>
+    <th>走行順</th>
+    <th>回数</th>
+    <th>チーム名</th>
+    <th>状態</th>
+  </tr>
+  {% for run in runs  %}
+  <tr>
+    <td>
+      {{run.order}}
+    </td>
+    <td>
+      {{run.run}}
+    </td>
+    <td>
+      <a href="{% url 'create' run.pk %}">{{run.team}}</a>
+    </td>
+    <td class="status">
+      {{run.status}}
+    </td>
+  </tr>
+  {% endfor %} 
+</table>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'score/js/index.js' %}"></script>
+{% endblock %}
