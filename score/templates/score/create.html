@@ -6,7 +6,8 @@
 
 {% block contents %}
 <div class="container">
-  <h1>{{title}}</h1>
+  <h1>{{tp句点入力}}</h1>
+  <h3 id ="error_msg">{{ msg }}</h3>
     <table class ="table table-hover table table-striped" >
       <form action="{% url 'confirm' %}"  method="POST">
         {% csrf_token %}
@@ -14,16 +15,151 @@
           <th>mission</th>
           <th>回数</th>
         </tr>
-        {% for field in form %}
         <tr>
           <td>
-            {{field.label}}
+            {{form.run.label}}
           </td>
           <td>
-            {{field}}
+            {{runs.team}}
+            <span style="visibility:hidden;">{{form.run}}</span>
           </td>
         </tr>
-        {% endfor %}
+        <tr>
+          <td>
+            走行回数
+          </td>
+          <td>
+            {{runs.run}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m1_count.label}}
+          </td>
+          <td>
+            {{form.m1_count}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m2_count.label}}
+          </td>
+          <td>
+            {{form.m2_count}}
+            <span id = "id_m2_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m2h_count.label}}
+          </td>
+          <td>
+            {{form.m2h_count}}
+            <span id = "id_m2h_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m3_count.label}}
+          </td>
+          <td>
+            {{form.m3_count}}
+            <span id = "id_m3_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m3h_count.label}}
+          </td>
+          <td>
+            {{form.m3h_count}}
+            <span id = "id_m3h_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m4_count.label}}
+          </td>
+          <td>
+            {{form.m4_count}}
+            <span id = "id_m4_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m4h_count.label}}
+          </td>
+          <td>
+            {{form.m4h_count}}
+            <span id = "id_m4h_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m5_count.label}}
+          </td>
+          <td>
+            {{form.m5_count}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m6_count.label}}
+          </td>
+          <td>
+            {{form.m6_count}}
+            <span id = "id_m6_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m6h_count.label}}
+          </td>
+          <td>
+            {{form.m6h_count}}
+            <span id = "id_m6h_count_error" style="visibility:hidden; color:red;">コンテナの数が合いません</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.m7_count.label}}
+          </td>
+          <td>
+            {{form.m7_count}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.bonus1_count.label}}
+          </td>
+          <td>
+            {{form.bonus1_count}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.bonus2_count.label}}
+          </td>
+          <td>
+            {{form.bonus2_count}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.perfect.label}}
+          </td>
+          <td>
+            {{form.perfect}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{form.clear_time.label}}
+          </td>
+          <td>
+            {{form.clear_time}}
+          </td>
+        </tr>
             <figure class="time">
               <button class="start" type="button" style ="width:30%; height:70px; border-radius:10px;">スタート</button>
               <button class="stop" type="button" style ="width:30%; height:70px;  border-radius:10px;">ストップ</button>

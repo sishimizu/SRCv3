@@ -23,3 +23,18 @@ class CountForm(forms.ModelForm):
       "perfect":'完全制覇',
       "clear_time":'クリアタイム',
     }
+  def clean(self):
+    cleaned_data = super().clean()
+    m2 = self.cleaned_data['m2_count']
+    m2h = self.cleaned_data['m2h_count']
+    m3 = self.cleaned_data['m3_count']
+    m3h = self.cleaned_data['m3h_count']
+    m4 = self.cleaned_data['m4_count']
+    m4h = self.cleaned_data['m4h_count']
+    m6 = self.cleaned_data['m6_count']
+    m6h = self.cleaned_data['m6h_count']
+    get_block = m2 + m2h
+    put_block = m3+m3h+m4+m4h+m6+m6h
+    if(get_block < put_block and put_block >= 0 ):
+      raise forms.ValidationError('コンテナの数が合っていません。修正してください。')
+    return cleaned_data

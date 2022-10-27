@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %} 審判用 {% endblock %}
+
+{% block contents %}
+<h1 style="text-align:center;">Classicルール  審判用</h1>
+<div class="container">
+  <div class="w-100 p-3" style="background-color: rgb(239, 237, 237);">
+    <h2>【開始前】</h2>
+    <ol>
+      <h3><li>チーム名の確認</li></h3>
+      <h3><li>コースの確認→たわみやシールの剥がれなど</li></h3>
+      <h3>
+        <li>
+          警告についての説明
+          <ul>
+            <li>コースアウトは、審判が宣言した後に選手がロボットを止める</li>
+            <li>勝手にロボットにさわらない</li>
+            <li> 審判の指示に従う</li>
+          </ul>
+        </li>
+      </h3>
+      <h3>
+        <li>オプションの確認
+          <ul>
+            <li>障害物を設置するか？</li>
+            <li>S 字コースに移動するか？</li>
+          </ul>
+        </li>
+      </h3>
+    </ol>
+  </div>
+  <br>
+  <div class="w-100 p-3"style="background-color: rgb(239, 237, 237);">
+    <h2>【競技中】</h2>
+    <div class="w-50 p-3" style="color:red;">
+      <h3 >審判：メイン</h3>
+      <ol>
+        <h3><li>タイマー開始</li></h3>
+        <h3><li>声に出しながら得点をカウント</li></h3>
+        <h3><li>スマホから得点入力</li></h3>
+      </ol>
+    </div>
+    <div class="w-50 p-3" style="color:rgb(61, 61, 243);">
+      <h3 >審判：サブ</h3>
+      <ol>
+        <h3><li>タイマー開始</li></h3>
+        <h3><li> 紙に記録</li></h3>
+      </ol>
+    </div>
+  </div>
+  <br>
+  <div class="w-100 p-3"style="background-color: rgb(239, 237, 237);">
+    <h2>【走行終了後(採点)】</h2>
+    <div class="w-50 p-3">
+      <ol>
+        <h3><li>審判：メイン・サブで得点確認</li></h3>
+        <h3><li> <span style="color:red;">サイン</span>をもらう</li></h3>
+        <h3><li>紙回収</li></h3>
+      </ol>
+    </div>
+  </div>
+  <br>
+  <div class="w-100 p-3"style="background-color: rgb(239, 237, 237);">
+    <h2>【明記されていないルールについて】</h2>
+      <ul>
+        <h4><li>荷物を置くのは<span style="color:rgb(61, 61, 243);">Material Storage</span>の銀の手前まで OK(取る動作に入ったら NG)</li></h4>
+        <h4><li>荷物を取った後の合流は<span style="color:rgb(13, 195, 13);">補助線＋３，４㎝まで</span></li></h4>
+        <h4><li>荷物取り時にぐるぐる同じところを周るのは OK。時間切れがあり →<span style="background-color:yellow;">コースアウト確認</span></li></h4>
+        <h4><li>フライングについて 1 度目は注意（ペナルティなし）</li></h4>
+        <h4><li>Moon Base4 内で 5 秒停止(完全停止)、タイヤは 2 個以上で成功（後輪も 1 個）</li></h4>
+      </ul>
+  </div>
+  <br>
+  <br>
+</div>
+{% endblock %}
+{% block script %}
+{% endblock %}

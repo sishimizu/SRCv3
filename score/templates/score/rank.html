@@ -6,7 +6,7 @@
 
 {% block contents %}
 <div class="container">
-  <h1>走行リスト</h1>
+  <h1>順位</h1>
 <table class ="table table-hover table table-striped" >
   <tr>
     <th>順位</th>
@@ -35,7 +35,22 @@
   </tr>
   {% endfor %} 
 </table>
+<table>
+  <tr>
+    <td>
+      <form action="{% url 'reset_data' %}" method="GET">
+        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">データをリセットする</button>
+      </form>
+    </td>
+    <td>
+      <form action="{% url 'export_data' %}" method="GET">
+        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">データを書き出す</button>
+      </form>
+    </td>
+  </tr>
+</table>    
 </div>
+
 {% endblock %}
 {% block script %}
 {% endblock %}

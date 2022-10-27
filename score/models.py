@@ -61,7 +61,7 @@ class Run(models.Model):
         (19,19),
         (20,20),
   ]
-  order = models.IntegerField(blank=False,null=False,unique=True,choices=OrderChoices)
+  order = models.IntegerField(blank=False,null=False,unique=True,choices=OrderChoices, primary_key=True)
   team = models.CharField( max_length=50,blank=False,choices=TeamChoices.choices)
   run = models.CharField(max_length=50,blank=False,choices=RunChoices.choices)
   status = models.CharField(max_length=50,blank=False,choices=StatusChoices.choices)
@@ -79,7 +79,7 @@ class Count(models.Model):
         (2,2),
         (3,3)
   ]
-  run = models.OneToOneField("score.Run", on_delete=models.CASCADE,blank=True,unique=True)
+  run = models.OneToOneField("score.Run", on_delete=models.CASCADE,blank=True,unique=True,null=True)
   m1_count = models.IntegerField(default=0,choices=CountChoices,blank=False)
   m2_count =  models.IntegerField(default=0,choices=CountChoices,blank=False)
   m2h_count = models.IntegerField(default=0,choices=CountChoices,blank=False)
@@ -103,7 +103,7 @@ class Count(models.Model):
 #Countからデータを読み取ってForm送信後にViewで入力と保存を行う
 #rankのページに遷移をする際に読み込みが必要
 class Score(models.Model):
-  run = models.OneToOneField("score.Run",on_delete=models.CASCADE,unique=True)
+  run = models.OneToOneField("score.Run",on_delete=models.CASCADE,unique=True,null=True)
   m1_score = models.IntegerField(default=0,blank=False)
   m2_score = models.IntegerField(default=0,blank=False)
   m2h_score = models.IntegerField(default=0,blank=False)

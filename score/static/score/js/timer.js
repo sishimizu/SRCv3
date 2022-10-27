@@ -38,7 +38,23 @@ record.disabled = true;
 
 let score_mode = 0;			//モード設定 リセット：0 スタート:1 ストップ:2
 Disnable_Elements(1,0);	//画面初期化時に各項目を使用不可にする
-
+//遷移元のページでボタンの押せる押せないを決める
+var ref = document.referrer
+ 
+const msg = document.getElementById("error_msg");
+if (ref.indexOf('http://127.0.0.1:8000/comfirm') !== -1) {
+	Enable_All_Elements();
+	console.log("確認画面からきた");
+}else if (ref.indexOf('http://127.0.0.1:8000') !== -1)  {
+	var now_ref =location.href
+	if(now_ref ='http://127.0.0.1:8000/comfirm'){
+		Enable_All_Elements();
+		console.log("コンテナミス");
+	}else{
+		Disnable_Elements();
+		console.log("チームからきた");
+	}
+}
 
 // スタートボタンがクリックされた
 startButton.addEventListener("click", function() {
@@ -72,6 +88,8 @@ document.getElementById("id_m5_count").addEventListener("click", function() {
 		if(score_mode == 1 || score_mode == 2){
 			document.getElementById("id_m6_count").disabled = false;			//「荷物を置く（MoonBase3）」使用可
 			document.getElementById("id_m6h_count").disabled = false;	//「荷物を置く（MoonBase3）半分」使用可
+			document.getElementById("id_perfect").disabled = false;
+			document.getElementById("id_m7_count").disabled = false;	
 		}
 	}else{
 		document.getElementById("id_bonus2_count").disabled = false;
@@ -82,8 +100,12 @@ document.getElementById("id_m5_count").addEventListener("click", function() {
 document.getElementById("id_bonus2_count").addEventListener("click", function() {
 	if(document.getElementById("id_bonus2_count").checked){
 		document.getElementById("id_m5_count").disabled = true;
+		document.getElementById("id_m5_count").checked = false;
 		document.getElementById("id_m6_count").disabled = true;			//「荷物を置く（MoonBase3）」使用不可
 		document.getElementById("id_m6h_count").disabled = true;	//「荷物を置く（MoonBase3）半分」使用不可
+		document.getElementById("id_perfect").disabled = true;   //「完全制覇」使用不可
+		document.getElementById("id_perfect").checked = false;   //「完全制覇」チェックを外す
+		document.getElementById("id_m7_count").disabled = true; //「MoonBase4に完全停止」使用不可
 	}else{
 		document.getElementById("id_m5_count").disabled = false;
 	}
@@ -134,6 +156,26 @@ function Disnable_Elements(){
 	document.getElementById("send").disabled = true;			//「送信」使用不可
 };
 
+//戻ったときにすべて編集可能にしておく
+function Enable_All_Elements(){
+	document.getElementById("id_m1_count").disabled = false;
+	document.getElementById("id_m2_count").disabled = false;
+	document.getElementById("id_m2h_count").disabled = false;
+	document.getElementById("id_m3_count").disabled = false;
+	document.getElementById("id_m3h_count").disabled = false;
+	document.getElementById("id_m4_count").disabled = false;
+	document.getElementById("id_m4h_count").disabled = false;	
+	document.getElementById("id_m5_count").disabled = false;
+	document.getElementById("id_m6_count").disabled = false;
+	document.getElementById("id_m6h_count").disabled = false;	
+	document.getElementById("id_m7_count").disabled = false;
+	document.getElementById("id_bonus1_count").disabled = false;
+	document.getElementById("id_bonus2_count").disabled = false;
+	document.getElementById("id_perfect").disabled = false;
+	document.getElementById("id_clear_time").disabled = false;
+	document.getElementById("send").disabled = false;
+};
+
 function Reset_Elements(){
 //値を初期化する
 //セレクトボックスは0番目の値にする
@@ -155,74 +197,34 @@ function Reset_Elements(){
 
 };
 
-//しみず清水自作
-/*
-// タイマー部
-let stop;
-let progress;
-let addition = 0;
-const record = document.querySelector(".counter");
+var m2 = document.getElementById('id_m2_count');
+var m2h = document.getElementById('id_m2h_count');
+var m3 = document.getElementById('id_m3_count');
+var m3h = document.getElementById('id_m3h_count');
+var m4 = document.getElementById('id_m4_count');
+var m4h = document.getElementById('id_m4h_count');
+var m6 = document.getElementById('id_m6_count');
+var m6h = document.getElementById('id_m6h_count');
 
-// カウンター
-function timer() {
-const start = new Date().getTime();
-stop = setInterval(function() {
-progress = new Date().getTime() - start + addition;
-const noms = progress / 1000;
-const millisecond = progress ? ("0" + String(noms).split(".")[1]).slice(-2) : "00";
-const nos = Math.trunc(noms);
-const second = nos ? ("0" + (nos % 86400 % 3600 %60)).slice(-2) : "00";
-const minute = nos >= 60 ? ("0" + Math.trunc(nos % 86400 % 3600 / 60)).slice(-2) : "00";
-const hour = nos >= 360 ? ("0" + Math.trunc(nos % 86400 / 3600)).slice(-2) : "00";
-if (progress < 86400) {
-  record.value =  minute + "." + second + "." + millisecond;
-} else {
-  record.value = "00.00.00"; clearInterval(stop); }}, 10);
-}
-// ボタン部
-const startButton = document.querySelector("button.start");
-const stopButton = document.querySelector("button.stop");
-const resetButton = document.querySelector("button.reset");
-const run = document.querySelector("select#id_run");
-const team = document.querySelector("select#id_team");
-const m1 = document.querySelector("select#id_m1_count");
-const m2 = document.querySelector("select#id_m2_count");
-const m2h = document.querySelector("select#id_m2h_count");
-const m3 = document.querySelector("select#id_m3_count");
-const m3h = document.querySelector("select#id_m3h_count");
-const m4 = document.querySelector("select#id_m4_count");
-const m4h = document.querySelector("select#id_m4h_count");
-const m5 = document.querySelector("input#id_m5_count");
-const m6 = document.querySelector("select#id_m6_count");
-const m6h = document.querySelector("select#id_m6h_count");
-const m7 = document.querySelector("input#id_m7_count");
-const bonus1 = document.querySelector("select#id_bonus1_count");
-const bonus2 = document.querySelector("input#id_bonus2_count");
-const perfect = document.querySelector("input#id_perfect");
+function check_block(selbox){
+  let get_block = Number(m2.value)+ Number(m2h.value);
+  let put_block = Number(m3.value)+Number(m3h.value)+Number(m4.value)+Number(m4h.value)+Number(m6.value)+Number(m6h.value);
+  if(get_block>=put_block || put_block <= 0 ){
+    document.getElementById(selbox.id + "_error").style.visibility = "hidden";
+  }else{
+		//selbox.value=0;
+    document.getElementById(selbox.id + "_error").style.visibility = "visible";
+  }
+};
 
-stopButton.disabled = true; resetButton.disabled = true;
-run.disabled = true; team.disabled = true; m1.disabled = true; m2.disabled = true; m2h.disabled = true;
-m3.disabled = true; m3h.disabled = true; m4.disabled = true; m4h.disabled = true; m5.disabled = true;
-m6.disabled = true; m6h.disabled = true; m7.disabled = true;
-bonus1.disabled = true; bonus2.disabled = true; perfect.disabled = true; record.disabled = true;
-// スタート
-startButton.addEventListener("click", function() {
-progress = 0; timer(); startButton.disabled = true; stopButton.disabled = false; resetButton.disabled = false;
-run.disabled = false; team.disabled = false; m1.disabled = false; m2.disabled = false; m2h.disabled = false;
-m3.disabled = false; m3h.disabled = false; m4.disabled = false; m4h.disabled = false; m5.disabled = false;
-m6.disabled = false; m6h.disabled = false; m7.disabled = false;
-bonus1.disabled = false; bonus2.disabled = false; perfect.disabled = false;
-});
+document.getElementById('id_m2_count').onchange =function(){check_block(m2)}
+document.getElementById('id_m2h_count').onchange =function(){check_block(m2h)}
+document.getElementById('id_m3_count').onchange =function(){check_block(m3)}
+document.getElementById('id_m3h_count').onchange =function(){check_block(m3h)}
+document.getElementById('id_m4_count').onchange =function(){check_block(m4)}
+document.getElementById('id_m4h_count').onchange =function(){check_block(m4h)}
+document.getElementById('id_m6_count').onchange =function(){check_block(m6)}
+document.getElementById('id_m6h_count').onchange =function(){check_block(m6h)}
 
-// ストップ
-stopButton.addEventListener("click", function() {
-clearInterval(stop); addition = progress; startButton.disabled = false; stopButton.disabled = true; resetButton.disabled = false;
-run.disabled = true; team.disabled = true; m1.disabled = true; m2.disabled = true; m2h.disabled = true;
-m3.disabled = true; m3h.disabled = true; m4.disabled = true; m4h.disabled = true; m5.disabled = true;
-m6.disabled = true; m6h.disabled = true; m7.disabled = true;
-bonus1.disabled = true; bonus2.disabled = true; perfect.disabled = true;
-});
-// リセット
-resetButton.addEventListener("click", function() {
-clearInterval(stop); progress = 0; record.value = "00.00.00"; addition = 0; startButton.disabled = false; stopButton.disabled = true; resetButton.disabled = true; });
-*/
+
+

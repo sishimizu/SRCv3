@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .forms import CountForm
 from .models import Run,Count,Score
 from django.views.generic import TemplateView,CreateView,ListView,UpdateView,FormView
@@ -13,7 +13,7 @@ class Index(TemplateView):
   model = Run
   def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        run = Run.objects.all().order_by("order","status")
+        run = Run.objects.all().order_by("order")
         context['runs'] = run
         #context['form'] = CountForm
         return context
@@ -28,6 +28,12 @@ class Create(FormView):
   template_name = "score/create.html"
   model = Count
   form_class = CountForm
+  def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        runs = Run.objects.get(order = self.kwargs['pk'])
+        context['runs'] = runs
+        return context
+      
   def get_form_kwargs(self):
         kwargs = super( Create, self).get_form_kwargs()
         if self.request.method=="GET":
@@ -40,8 +46,13 @@ class Create(FormView):
     return initial
   
   def form_valid(self, form):
-    context ={'form':form}
+    runs = Run.objects.get(order = self.kwargs['pk'])
+    context ={
+      'form':form,
+      'runs':runs
+    }
     return render(self.request, 'score/create.html',context)
+  
 
 #確認画面の処理
 #得点入力画面で送信ボタンを押されたらこちらの処理に飛んでくる
@@ -99,7 +110,7 @@ class Confirm(FormView):
   def form_valid(self, form):
     score = self.calc_score(form)
     pk = self.request.POST['run']
-    run = Run.objects.get(id=pk)
+    run = Run.objects.get(order=pk)
     context ={
       'form':form,
       'pk':pk ,
@@ -111,8 +122,16 @@ class Confirm(FormView):
   #フォームに何か問題があったときの処理
   #入力画面に戻る
   def form_invalid(self, form):
-    context ={'form':form}
-    return render(self.request, 'score/create.html',context)
+    msg ='コンテナの数が合いません。修正して下さい'
+    pk = self.request.POST['run']
+    run = Run.objects.get(order=pk)
+    context ={
+      'form':form,
+      'msg':msg,
+      'pk':pk,
+      'runs':run,
+    }
+    return render(self.request,'score/create.html' ,context)
 
 #確定のボタンを押したときの処理
 class Determine(CreateView):
@@ -175,7 +194,7 @@ class Determine(CreateView):
     #Scoreの保存
     score = self.calc_score(form)
     pk = self.request.POST['run']
-    run = Run.objects.get(id=pk)
+    run = Run.objects.get(order=pk)
     score_obj = Score(
       run=run,
       m1_score=score["m1_score"],
@@ -195,7 +214,7 @@ class Determine(CreateView):
       )
     score_obj.save()
     #RunのStatusの変更
-    run_obj = Run.objects.get(id=pk)
+    run_obj = Run.objects.get(order=pk)
     run_obj.status = "走行後"
     run_obj.save()
     return super().form_valid(form)
@@ -220,3 +239,35 @@ class Rank(TemplateView):
       team.rank = i
       team.save()
     return super().get(request, *args, **kwargs)
+
+class Libretto(TemplateView):
+  template_name ='score/libretto.html'
+  
+class ResetData(TemplateView):
+  template_name = 'score/index.html'
+  model = Run
+  def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        run = Run.objects.all().order_by("order")
+        context['runs'] = run
+        #context['form'] = CountForm
+        return context
+      
+  def get(self, request, *args, **kwargs):
+    count =Count.objects.all()
+    count.delete()
+    score = Score.objects.all()
+    score.delete()
+    ranks = Run.objects.all()
+    for rank in ranks:
+      rank.rank = None
+      rank.save()
+    runs = Run.objects.all()
+    for run in runs:
+      run.status = "走行前"
+      run.save()
+    return super().get(request, *args, **kwargs)
+  
+  
+class ExportData(TemplateView):
+  template_name = 'score/index.html'
