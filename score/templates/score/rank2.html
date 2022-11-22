@@ -16,22 +16,22 @@
     <th>得点</th>
     <th>クリアタイム</th>
   </tr>
-  {% for score in scores  %}
+  {% for item in rank_list  %}
   <tr>
     <td>
-      {{score.run.rank}}
+      {{forloop.counter}}
     </td>
     <td>
-      {{score.run.run}}
+      {{item.0.run.run}}
     </td>
     <td>
-      {{score.run.team}}
+      {{item.0.run.team}}
     </td>
     <td>
-      {{score.total}}
+      {{item.1}}
     </td>
     <td>
-      {{score.run.count.clear_time}}
+      {{item.2}}
     </td>
   </tr>
   {% endfor %} 
@@ -44,13 +44,13 @@
       </form>
     </td>
     <td>
-      <form action="{% url 'export_data' %}" method="GET">
+      <form action="{% url 'export_data_all' %}" method="GET">
         <button type="submit" style ="width:150px; height:60px; border-radius:10px;">データを書き出す</button>
       </form>
     </td>
     <td>
-      <form action="{% url 'rank2' %}" method="GET">
-        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">最終順位</button>
+      <form action="{% url 'rank' %}" method="GET">
+        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">もとの順位に戻る</button>
       </form>
     </td>
   </tr>

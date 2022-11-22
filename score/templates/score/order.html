@@ -5,7 +5,6 @@
 {% block title %} 走行順 {% endblock %}
 
 {% block contents %}
-{% include 'header.html' %}
 <div class="container">
   <h1>走行リスト</h1>
 <table class ="table table-hover table table-striped" >
@@ -16,8 +15,7 @@
     <th>状態</th>
   </tr>
   {% for run in runs  %}
-  {% if run.status == "走行後" %}
-    <tr  style="background-color:rgb(104, 99, 99);">
+    <tr>
       <td>
         {{run.order}}
       </td>
@@ -31,22 +29,6 @@
         {{run.status}}
       </td>
     </tr>
-  {% else %}
-  <tr>
-    <td>
-      {{run.order}}
-    </td>
-    <td>
-      {{run.run}}
-    </td>
-    <td>
-      <a href="{% url 'create' run.pk %}">{{run.team}}</a>
-    </td>      
-    <td class="status">
-      {{run.status}}
-    </td>
-  </tr>
-  {% endif %}
   {% endfor %} 
 </table>
 </div>
