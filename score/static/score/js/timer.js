@@ -15,10 +15,10 @@ const nos = Math.trunc(noms);
 const second = nos ? ("0" + (nos % 86400 % 3600 %60)).slice(-2) : "00";
 const minute = nos >= 60 ? ("0" + Math.trunc(nos % 86400 % 3600 / 60)).slice(-2) : "00";
 const hour = nos >= 360 ? ("0" + Math.trunc(nos % 86400 / 3600)).slice(-2) : "00";
-if (progress < 86400) {
+if (progress < 240000) {
   record.value =  minute + ":" + second + "." + millisecond;
-} else {
-  record.value = "00:00.00"; clearInterval(stop); }}, 10);
+}else {
+  record.value = "time over"; }}, 10);
 }
 // ボタン部
 const startButton = document.querySelector("button.start");
@@ -26,11 +26,11 @@ const stopButton = document.querySelector("button.stop");
 const submit = document.getElementById("send");
 //---------------- ここから下を書き換えてます -------------------//
 //初期化時：
-//スタート時：「走行」と「チーム名」を選択したら使用可に
+//スタート時：
 //ストップ時：各項目は変更可(レース後に入力＆確認する)
 //※スタート後にストップしたら送信可能になる？(間違いタップ防止)
 //リセット時：初期化＋値も初期化
-//送信ボタンを押したら自動的に画面リセットor走行順ページor順位ページに移動？
+//送信ボタンを押したら自動的に順位ページに移動
 
 
 stopButton.disabled = true;
@@ -40,20 +40,15 @@ let score_mode = 0;			//モード設定 リセット：0 スタート:1 スト�
 Disnable_Elements(1,0);	//画面初期化時に各項目を使用不可にする
 //遷移元のページでボタンの押せる押せないを決める
 var ref = document.referrer
- 
+
 const msg = document.getElementById("error_msg");
-if (ref.indexOf('http://127.0.0.1:8000/comfirm') !== -1) {
+var now_ref =location.href
+if (ref.indexOf('http://127.0.0.1:8000/confirm') !== -1 ||now_ref =='http://127.0.0.1:8000/confirm') {
 	Enable_All_Elements();
-	console.log("確認画面からきた");
-}else if (ref.indexOf('http://127.0.0.1:8000') !== -1)  {
-	var now_ref =location.href
-	if(now_ref ='http://127.0.0.1:8000/comfirm'){
-		Enable_All_Elements();
-		console.log("コンテナミス");
-	}else{
-		Disnable_Elements();
-		console.log("チームからきた");
-	}
+	console.log('再入力')
+}else if(ref.indexOf('http://127.0.0.1:8000/') !== -1){
+	Disnable_Elements();
+	console.log("チームからきた");
 }
 
 // スタートボタンがクリックされた
@@ -66,50 +61,19 @@ score_mode = 1;
 // ストップボタンがクリックされた 各項目は操作可能のまま
 //ストップボタンを押したら送信可能にする？
 stopButton.addEventListener("click", function() {
-clearInterval(stop); addition = progress; startButton.disabled = true; stopButton.disabled = true;
-document.getElementById("send").disabled = false;			//「送信」使用可
-document.getElementById("id_m6_count").disabled = false;			//「荷物を置く（MoonBase3）」使用可
-document.getElementById("id_m6h_count").disabled = false;	//「荷物を置く（MoonBase3）半分」使用可
-document.getElementById("id_clear_time").disabled = false;	//「クリアタイム」使用可
-score_mode = 2;
+	clearInterval(stop); addition = progress; startButton.disabled = true; stopButton.disabled = true;
+	document.getElementById("send").disabled = false;	//「送信」使用可
+	Enable_All_Elements(); //要素をすべて変更可能に
+//	document.getElementById("id_m6_count").disabled = false;			//「荷物を置く（MoonBase3）」使用可
+//	document.getElementById("id_m6h_count").disabled = false;	//「荷物を置く（MoonBase3）半分」使用可
+	score_mode = 2;
 });
 
 //送信ボタンが押された
 submit.addEventListener("click", function() {
 	startButton.disabled = false;
-	});
-
-
-//S字コースか3周のみかの比較
-document.getElementById("id_m5_count").addEventListener("click", function() {
-	if(document.getElementById("id_m5_count").checked){
-		document.getElementById("id_bonus2_count").disabled = true;
-		//スタート時とストップ時なら下2つの項目を使用可にするそうでなければ不可
-		if(score_mode == 1 || score_mode == 2){
-			document.getElementById("id_m6_count").disabled = false;			//「荷物を置く（MoonBase3）」使用可
-			document.getElementById("id_m6h_count").disabled = false;	//「荷物を置く（MoonBase3）半分」使用可
-			document.getElementById("id_perfect").disabled = false;
-			document.getElementById("id_m7_count").disabled = false;	
-		}
-	}else{
-		document.getElementById("id_bonus2_count").disabled = false;
-		document.getElementById("id_m6_count").disabled = true;			//「荷物を置く（MoonBase3）」使用不可
-		document.getElementById("id_m6h_count").disabled = true;	//「荷物を置く（MoonBase3）半分」使用不可
-	}
 });
-document.getElementById("id_bonus2_count").addEventListener("click", function() {
-	if(document.getElementById("id_bonus2_count").checked){
-		document.getElementById("id_m5_count").disabled = true;
-		document.getElementById("id_m5_count").checked = false;
-		document.getElementById("id_m6_count").disabled = true;			//「荷物を置く（MoonBase3）」使用不可
-		document.getElementById("id_m6h_count").disabled = true;	//「荷物を置く（MoonBase3）半分」使用不可
-		document.getElementById("id_perfect").disabled = true;   //「完全制覇」使用不可
-		document.getElementById("id_perfect").checked = false;   //「完全制覇」チェックを外す
-		document.getElementById("id_m7_count").disabled = true; //「MoonBase4に完全停止」使用不可
-	}else{
-		document.getElementById("id_m5_count").disabled = false;
-	}
-});
+
 
 function Enable_Elements(){
 //走行、チーム名はスタート前でも操作可能にする
@@ -122,7 +86,7 @@ function Enable_Elements(){
 	document.getElementById("id_m4h_count").disabled = false;	//「荷物を置く（MoonBase2）半分」使用可
 //document.getElementById("id_m5_count").disabled = ;						//「S字コースに移動」
 
-	document.getElementById("id_m7_count").disabled = false;			//「MoonBase4に完全停止」使用可
+
 	document.getElementById("id_bonus1_count").disabled = false;			//「障害物回避する」使用可
 //document.getElementById("id_bonus2_count").disabled = ;						//「3周してひょうたん..」
 	document.getElementById("id_perfect").disabled = false;			//「完全制覇」使用可
@@ -131,9 +95,11 @@ function Enable_Elements(){
 	if(document.getElementById("id_m5_count").checked){
 		document.getElementById("id_m6_count").disabled = false;		//「荷物を置く（MoonBase3）」使用可
 		document.getElementById("id_m6h_count").disabled = false;//「荷物を置く（MoonBase3）半分」使用可
+		document.getElementById("id_m7_count").disabled = false;			//「MoonBase4に完全停止」使用可
 	}else{
 		document.getElementById("id_m6_count").disabled = true;			//「荷物を置く（MoonBase3）」使用不可
 		document.getElementById("id_m6h_count").disabled = true;	//「荷物を置く（MoonBase3）半分」使用不可
+		document.getElementById("id_m7_count").disabled = true;			//「MoonBase4に完全停止」使用可
 	}
 };
 
@@ -164,10 +130,10 @@ function Enable_All_Elements(){
 	document.getElementById("id_m3_count").disabled = false;
 	document.getElementById("id_m3h_count").disabled = false;
 	document.getElementById("id_m4_count").disabled = false;
-	document.getElementById("id_m4h_count").disabled = false;	
+	document.getElementById("id_m4h_count").disabled = false;
 	document.getElementById("id_m5_count").disabled = false;
 	document.getElementById("id_m6_count").disabled = false;
-	document.getElementById("id_m6h_count").disabled = false;	
+	document.getElementById("id_m6h_count").disabled = false;
 	document.getElementById("id_m7_count").disabled = false;
 	document.getElementById("id_bonus1_count").disabled = false;
 	document.getElementById("id_bonus2_count").disabled = false;
@@ -197,34 +163,6 @@ function Reset_Elements(){
 
 };
 
-var m2 = document.getElementById('id_m2_count');
-var m2h = document.getElementById('id_m2h_count');
-var m3 = document.getElementById('id_m3_count');
-var m3h = document.getElementById('id_m3h_count');
-var m4 = document.getElementById('id_m4_count');
-var m4h = document.getElementById('id_m4h_count');
-var m6 = document.getElementById('id_m6_count');
-var m6h = document.getElementById('id_m6h_count');
-
-function check_block(selbox){
-  let get_block = Number(m2.value)+ Number(m2h.value);
-  let put_block = Number(m3.value)+Number(m3h.value)+Number(m4.value)+Number(m4h.value)+Number(m6.value)+Number(m6h.value);
-  if(get_block>=put_block || put_block <= 0 ){
-    document.getElementById(selbox.id + "_error").style.visibility = "hidden";
-  }else{
-		//selbox.value=0;
-    document.getElementById(selbox.id + "_error").style.visibility = "visible";
-  }
-};
-
-document.getElementById('id_m2_count').onchange =function(){check_block(m2)}
-document.getElementById('id_m2h_count').onchange =function(){check_block(m2h)}
-document.getElementById('id_m3_count').onchange =function(){check_block(m3)}
-document.getElementById('id_m3h_count').onchange =function(){check_block(m3h)}
-document.getElementById('id_m4_count').onchange =function(){check_block(m4)}
-document.getElementById('id_m4h_count').onchange =function(){check_block(m4h)}
-document.getElementById('id_m6_count').onchange =function(){check_block(m6)}
-document.getElementById('id_m6h_count').onchange =function(){check_block(m6h)}
 
 
 

@@ -39,6 +39,7 @@ class StatusChoices(models.TextChoices):
 #チーム、第何走行か、状態、順位を入れておく
 
 class Run(models.Model):
+  '''
   OrderChoices = [
         (1,1),
         (2,2),
@@ -61,7 +62,8 @@ class Run(models.Model):
         (19,19),
         (20,20),
   ]
-  order = models.IntegerField(blank=False,null=False,unique=True,choices=OrderChoices, primary_key=True)
+  '''
+  order = models.IntegerField(blank=False,null=False,unique=True, primary_key=True)
   team = models.CharField( max_length=50,blank=False,choices=TeamChoices.choices)
   run = models.CharField(max_length=50,blank=False,choices=RunChoices.choices)
   status = models.CharField(max_length=50,blank=False,choices=StatusChoices.choices)
@@ -95,6 +97,7 @@ class Count(models.Model):
   bonus2_count = models.BooleanField(default=False)
   perfect = models.BooleanField(default=False)
   clear_time = models.CharField(max_length=8,default="00:00:00")
+  sign = models.ImageField(upload_to='media',blank=True,null=True)  
   def __str__(self):
         return str(self.run)
   
@@ -120,3 +123,4 @@ class Score(models.Model):
   total = models.IntegerField(default=0,blank=False)
   def __str__(self):
         return str(self.run)
+

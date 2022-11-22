@@ -23,6 +23,7 @@ class CountForm(forms.ModelForm):
       "perfect":'完全制覇',
       "clear_time":'クリアタイム',
     }
+
   def clean(self):
     cleaned_data = super().clean()
     m2 = self.cleaned_data['m2_count']
@@ -37,4 +38,10 @@ class CountForm(forms.ModelForm):
     put_block = m3+m3h+m4+m4h+m6+m6h
     if(get_block < put_block and put_block >= 0 ):
       raise forms.ValidationError('コンテナの数が合っていません。修正してください。')
+    elif (get_block != put_block and get_block!=0 and get_block < put_block):
+      raise forms.ValidationError('コンテナの数が合っていません。修正してください。')
     return cleaned_data
+  
+  def __init__(self, *args, **kwargs):
+    self.sign = kwargs.pop('sign', None)  # viewから変数を取得
+    super(CountForm, self).__init__(*args, **kwargs)

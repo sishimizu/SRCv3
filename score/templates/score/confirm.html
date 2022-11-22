@@ -5,6 +5,7 @@
 {% block title %} 確認画面 {% endblock %}
 
 {% block contents %}
+<p></p>
 <div class="container">
   <h1>確認画面</h1>
   <h3>得点を確認してください</h3>
@@ -13,11 +14,22 @@
       <td>
         {{form.run.label}}
       </td>
-      <td>
+      <td id="team">
         {{run.team}}
       </td>
       <td>
         得点
+      </td>
+    </tr>
+    <tr>
+      <td>
+        走行回数
+      </td>
+      <td id="run">
+        {{run.run}}
+      </td>
+      <td>
+        ----
       </td>
     </tr>
     <tr>
@@ -204,6 +216,17 @@
         {{score.total}} 
       </td>
     </tr>
+    <tr>
+      <td>
+        サイン
+      </td>
+      <td>
+          {% csrf_token %}
+          <canvas id="canvas" width="500" height="300" style="border: 1px solid #000000;"></canvas>
+          <br>
+          <button type="button" id="clear-button">全消し</button>
+      </td>
+    </tr>
   </table>
   <table>
     <tr>
@@ -217,12 +240,12 @@
         </form>
       </td>
       <td>
-        <form action="{% url 'determine' %}" method="POST">
+        <form id = "form_area" enctype="multipart/form-data" action="" method="POST">
           {% csrf_token %}
           {% for field in form %}
             {{ field.as_hidden }}
           {% endfor %}
-          <button type="submit" style ="width:150px; height:60px; border-radius:10px;">確定する</button>
+          <button id = 'go' type="submit" style ="width:150px; height:60px; border-radius:10px;">確定する</button>
         </form>
       </td>
     </tr>
@@ -231,5 +254,6 @@
 
 {% endblock %}
 {% block script %}
-
+<script src="{% static 'score/js/canvas.js' %}"></script>
+<script src="{% static 'score/js/ajax_canvas.js' %}"></script>
 {% endblock %}
