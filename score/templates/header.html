@@ -1,9 +1,12 @@
 <div class="container">
   <header class="d-flex justify-content-center py-3">
     <ul class="nav nav-pills">
-      <li class="nav-item"><a href="/rank" class="nav-link">順位</a></li>
-      <li class="nav-item"><a href="{% url "index" %}" class="nav-link">走行順</a></li>
+      <li class="nav-item"><a href="{% url 'rank' %}" class="nav-link">順位</a></li>
+      <li class="nav-item"><a href="{% url 'index' %}" class="nav-link">走行順</a></li>
+      {% if request.user.is_authenticated %}
       <li class="nav-item"><a href="/libretto" class="nav-link">審判カンペ</a></li>
+      <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link">ログアウト</a></li>
+      {% endif %}
     </ul>
   </header>
  </div>

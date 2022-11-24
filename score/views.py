@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .forms import CountForm
+from .forms import CountForm,LoginForm
 from .models import Run,Count,Score
 from django.views.generic import TemplateView,CreateView,ListView,UpdateView,FormView
 from django.urls import reverse_lazy
@@ -9,6 +9,8 @@ import math
 from operator import itemgetter
 import base64
 from django.core.files.base import ContentFile
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView,LogoutView
 
 # Create your views here.
 #走行順にチーム名が並んでいるページ
@@ -29,8 +31,9 @@ class Index(TemplateView):
 #得点入力のページに飛んできたときの処理
 #Getの場合はフォームを表示する
 #確認画面から戻ってくる場合はFormの値を保持したまま
-class Create(FormView):
+class Create(LoginRequiredMixin,FormView):
   template_name = "score/create.html"
+  login_url = 'login'
   model = Count
   form_class = CountForm
   def get_context_data(self, **kwargs):
@@ -62,9 +65,10 @@ class Create(FormView):
 #確認画面の処理
 #得点入力画面で送信ボタンを押されたらこちらの処理に飛んでくる
 #カウントから得点を計算して確認画面のテンプレートに送る
-class Confirm(FormView):
+class Confirm(LoginRequiredMixin,FormView):
   form_class = CountForm
   template_name = "score/confirm.html"
+  login_url = 'login'
   #得点を計算するための自作関数
   def calc_score(self, form):
     m1_score = form.cleaned_data['m1_count'] * 100
@@ -139,9 +143,10 @@ class Confirm(FormView):
     return render(self.request,'score/create.html' ,context)
 
 #確定のボタンを押したときの処理
-class Determine(CreateView):
+class Determine(LoginRequiredMixin,CreateView):
   form_class = CountForm
   model = Count  
+  login_url = 'login'
   def calc_score(self):
     m1_score = int(self.request.POST.get("m1_count")) * 100
     m2_score = int(self.request.POST.get("m2_count")) * 400
@@ -153,17 +158,18 @@ class Determine(CreateView):
     m6_score = int(self.request.POST.get("m6_count")) * 1000
     m6h_score = int(self.request.POST.get("m6h_count")) * 500
     bonus1_score = int(self.request.POST.get("bonus1_count")) * 200
-    if(self.request.POST.get("m5_count") == True):
+    if (self.request.POST.get("m5_count") == 'True'):
       m5_score = 500
     else:
       m5_score = 0
-      
-    if(self.request.POST.get("m7_count") == True):
+
+
+    if(self.request.POST.get("m7_count") == 'True'):
       m7_score = 500
     else:
       m7_score = 0
       
-    if(self.request.POST.get("bonus2_count") == True):
+    if(self.request.POST.get("bonus2_count") == 'True'):
       bonus2_score = 200
     else:
       bonus2_score = 0
@@ -198,7 +204,10 @@ class Determine(CreateView):
     data_url = self.request.POST.get("img")
     splitString = data_url.split(',')
     img_binary = base64.b64decode(splitString[1])
-    filename=self.request.POST.get("team")+'_'+self.request.POST.get("run_n")+'.png'
+    team_name=self.request.POST.get("team").replace(' ', '')
+    run_num = self.request.POST.get("run_n").replace(' ', '')
+    filename_elm = [team_name,'_',run_num,'.png']
+    filename = ''.join(filename_elm)
     #Countの保存
     pk = self.request.POST.get('run')
     run = Run.objects.get(order=pk)
@@ -219,7 +228,7 @@ class Determine(CreateView):
       bonus2_count=self.request.POST.get("bonus2_count"),
       perfect=self.request.POST.get("perfect"),
       clear_time=self.request.POST.get("clear_time"), 
-      sign=ContentFile(img_binary, filename)
+      sign=ContentFile(img_binary,filename)
     )
     count_obj.save()
     #Scoreの保存
@@ -271,8 +280,9 @@ class Rank(TemplateView):
     return super().get(request, *args, **kwargs)
 
 #審判の台本を表示する
-class Libretto(TemplateView):
+class Libretto(LoginRequiredMixin,TemplateView):
   template_name ='score/libretto.html'
+  login_url = 'login'
 
 #データを消すRunテーブルのデータは消さない
 #特にページがあるわけではない関数ベースで作ってもいいかも
@@ -288,6 +298,10 @@ class ResetData(TemplateView):
       
   def get(self, request, *args, **kwargs):
     count =Count.objects.all()
+    for img in count:
+      upload_image = get_object_or_404(Count, id=img.run)
+      upload_image.sign.delete()
+      upload_image.delete()
     count.delete()
     score = Score.objects.all()
     score.delete()
@@ -448,4 +462,15 @@ class Order(TemplateView):
 
   def get(self, request, *args, **kwargs):
     return super().get(request, *args, **kwargs)
-  
+
+class Login(LoginView):
+    template_name = 'score/login.html'
+    form_class = LoginForm
+
+class Logout(LogoutView):
+    template_name = 'score/login.html'
+    form_class = LoginForm
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = LoginForm
+        return context

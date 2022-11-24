@@ -38,19 +38,21 @@
 </table>
 <table>
   <tr>
+    {% if request.user.is_authenticated %}
     <td>
       <form action="{% url 'reset_data' %}" method="GET">
-        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">データをリセットする</button>
+        <button type="submit" style ="width:140px; height:60px; border-radius:10px;">データをリセットする</button>
       </form>
     </td>
     <td>
       <form action="{% url 'export_data' %}" method="GET">
-        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">データを書き出す</button>
+        <button type="submit" style ="width:140px; height:60px; border-radius:10px;">データを書き出す</button>
       </form>
     </td>
+    {% endif %}
     <td>
       <form action="{% url 'rank2' %}" method="GET">
-        <button type="submit" style ="width:150px; height:60px; border-radius:10px;">最終順位</button>
+        <button type="submit" style ="width:140px; height:60px; border-radius:10px;">最終順位</button>
       </form>
     </td>
   </tr>

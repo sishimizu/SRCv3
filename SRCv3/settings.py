@@ -124,3 +124,6 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 IMPORT_EXPORT_IMPORT_PERMISSION_CODE = 'change'
+
+LOGIN_URL = 'score/login'
+LOGIN_REDIRECT_URL = 'index'
