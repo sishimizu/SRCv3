@@ -14,4 +14,6 @@ urlpatterns = [
     path('reset_data',views.ResetData.as_view(),name='reset_data'),
     path('export_data',views.ExportData,name='export_data'),
     path('export_data_all',views.ExportData2,name='export_data_all'),
+    path('login',views.Login.as_view(),name='login'),
+    path('logout', views.Logout.as_view(), name="logout"),
 ]

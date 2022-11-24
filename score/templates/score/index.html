@@ -40,7 +40,11 @@
       {{run.run}}
     </td>
     <td>
+      {% if request.user.is_authenticated %}
       <a href="{% url 'create' run.pk %}">{{run.team}}</a>
+      {% else %}
+      {{run.team}}
+      {% endif %}
     </td>      
     <td class="status">
       {{run.status}}

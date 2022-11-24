@@ -1,5 +1,7 @@
 from django import forms
 from .models import Run,Count,Score
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
 
 class CountForm(forms.ModelForm):
   class Meta:
@@ -45,3 +47,9 @@ class CountForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     self.sign = kwargs.pop('sign', None)  # viewから変数を取得
     super(CountForm, self).__init__(*args, **kwargs)
+    
+class LoginForm(AuthenticationForm):
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    for field in self.fields.values():
+        field.widget.attrs['placeholder'] = field.label
